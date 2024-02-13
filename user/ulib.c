@@ -63,22 +63,64 @@ strchr(const char *s, char c)
   return 0;
 }
 
-char*
+int
 gets(char *buf, int max)
 {
-  int i, cc;
+  return fgets(buf, max, 0);
+}
+
+int
+fgets(char *buf, int max, int file_des){
+  int i = 0, cc;
   char c;
 
-  for(i=0; i+1 < max; ){
-    cc = read(0, &c, 1);
-    if(cc < 1)
-      break;
-    buf[i++] = c;
-    if(c == '\n' || c == '\r')
-      break;
+  for(i=0; i+1<max;){
+	cc = read(file_des, &c, 1);
+	if(cc<1)
+	   break;
+	buf[i++] = c;
+	if(c == '\n' || c== '\r')
+	   break;
   }
+
   buf[i] = '\0';
-  return buf;
+  return i;
+}
+
+int getline(char **lineptr, int *sz, int fd){
+   if(*sz == 0 && *lineptr ==0){
+	*sz = 1024;
+	*lineptr = malloc(*sz);
+   }
+
+   char *buf = *lineptr;
+   int total = 0;
+   int result = 0;
+  
+   while(buf[total-1] != '\n'){
+	result = fgets(buf + total, *sz - total, fd);
+	total += result;
+
+	if(result == 0){
+	   return total;
+	}
+
+	else if (result == -1){
+	   return total;
+	}
+
+	else{
+	   *sz = *sz * 2;
+	   char *new_buf = malloc(*sz);
+	   memcpy(new_buf, *lineptr, *sz/2);
+	   free(*lineptr);
+	   *lineptr = new_buf;
+	   buf = *lineptr;
+	}
+	
+   }
+
+   return total;
 }
 
 int

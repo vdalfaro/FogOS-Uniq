@@ -1,3 +1,4 @@
+
 struct stat;
 
 // system calls
@@ -31,7 +32,9 @@ char* strchr(const char*, char c);
 int strcmp(const char*, const char*);
 void fprintf(int, const char*, ...);
 void printf(const char*, ...);
-char* gets(char*, int max);
+int gets(char*, int max);
+int fgets(char s[], int size, int file_des);
+int getline(char **s, int *size, int file_des);
 uint strlen(const char*);
 void* memset(void*, int, uint);
 void* malloc(uint);
