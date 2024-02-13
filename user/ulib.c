@@ -2,6 +2,7 @@
 #include "kernel/stat.h"
 #include "kernel/fcntl.h"
 #include "user/user.h"
+#include <stdbool.h>
 
 //
 // wrapper so that it's OK if main() does not call exit().
@@ -190,6 +191,17 @@ memcpy(void *dst, const void *src, uint n)
 
 
 void
-uniq(){
+uniq(int fd){
+
+  int sz = 10;
+  char *line = malloc(sz);
+
+  while (true) {
+    printf("Buffer address: %p\n", line);
+    if (getline(&line, &sz, fd) <= 0) {
+      break;
+    }
+    printf("Line:           %s\n", line);
+  }
 
 }
