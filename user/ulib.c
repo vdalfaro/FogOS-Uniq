@@ -193,14 +193,38 @@ memcpy(void *dst, const void *src, uint n)
 void
 uniq(int fd){
 
-  int sz = 10;
+  int sz = 10; int count = 0;
   char *line = malloc(sz);
+  char *lines[1024];
 
   while (true) {
     if (getline(&line, &sz, fd) <= 0) {
       break;
     }
-    printf("Line:           %s\n", line);
+
+    lines[count] = line;
+    count++;
+  }  
+
+  int i = 0; int current = 0;
+  while(strcmp(lines[i],"\n")){
+	if(current == 0 || i == 0){
+	   current++;
+	}
+
+	else if(!strcmp(lines[i], lines[i-1])){
+	   current++;
+	}
+
+	else{
+	   //printf("%d %s", current, lines[i]);
+	   current = 1;
+	}
+
+	printf("%d %s", current, lines[i]);
+	i++;
+
   }
+
 
 }
