@@ -197,7 +197,6 @@ uniq(int fd){
   char *line = malloc(sz);
 
   while (true) {
-    printf("Buffer address: %p\n", line);
     if (getline(&line, &sz, fd) <= 0) {
       break;
     }

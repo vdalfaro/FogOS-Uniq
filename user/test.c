@@ -5,9 +5,9 @@
 #include "kernel/fcntl.h"
 #include <stdbool.h>
 
-int main(){
+int main(int argc, char *argv[]){
 
-  int fd = open("README.md", O_RDONLY);
+  int fd = open(argv[1], O_RDONLY);
   uniq(fd);
   return 0;
 
