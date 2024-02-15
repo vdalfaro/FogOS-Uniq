@@ -206,6 +206,11 @@ uniq(int fd){
     count++;
   }  
 
+
+  printf("%s\n", lines[0]);
+  bubble_sort(lines, count);
+  printf("%s\n", lines[0]);
+
   int i = 0; int current = 0;
   while(strcmp(lines[i],"\n")){
 	if(current == 0 || i == 0){
@@ -221,7 +226,7 @@ uniq(int fd){
 	   current = 1;
 	}
 
-	printf("%d %s", current, lines[i]);
+	printf("%d %s\n", current, lines[i]);
 	i++;
 
   }
@@ -242,9 +247,9 @@ bubble_sort(char *list[], int length) {
 		for (int j = i + 1; j < length; j++) {
 			if (strcmp(list[i], list[j]) > 0) {
 				swap(list, i, j);
-				printf("swapping %s with %s\n", list[i], list[j]);
+				//printf("swapping %s with %s\n", list[i], list[j]);
 			}
 		}
-		printf("list[%d] is %s\n", i, list[i]);
+		//printf("list[%d] is %s\n", i, list[i]);
 	}
 }
