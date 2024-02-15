@@ -206,15 +206,25 @@ uniq(int fd){
     count++;
   }  
 
-
-  printf("%s\n", lines[0]);
+  //printf("%s\n", lines[0]);
+  /*for (int i = 0; i < count; i++) {
+     printf("line %d is %s\n", i, lines[i]);
+  }*/
   bubble_sort(lines, count);
-  printf("%s\n", lines[0]);
+  /*for (int i = 0; i < count; i++) {
+     printf("line %d is %s\n", i, lines[i])
+  */
+  
 
   int i = 0; int current = 0;
-  while(strcmp(lines[i],"\n")){
-	if(current == 0 || i == 0){
+  while(i < count){
+
+	if(i == 0){
 	   current++;
+	}
+
+	else if(!strcmp(lines[i], "\0") || !strcmp(lines[i], "\n")) {
+	   
 	}
 
 	else if(!strcmp(lines[i], lines[i-1])){
@@ -222,11 +232,11 @@ uniq(int fd){
 	}
 
 	else{
-	   //printf("%d %s", current, lines[i]);
+	   printf("%d %s", current, lines[i]);
 	   current = 1;
-	}
+	}	
 
-	printf("%d %s\n", current, lines[i]);
+	//printf("%d %s", current, lines[i]);
 	i++;
 
   }
