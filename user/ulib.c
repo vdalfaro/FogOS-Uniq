@@ -204,3 +204,23 @@ uniq(int fd){
   }
 
 }
+
+void
+swap(char * list[], int i, int j) {
+	char * temp = list[i];
+	list[i] = list[j];
+	list[j] = temp;
+}
+
+void
+bubble_sort(char *list[], int length) {
+	for (int i = 0; i < length; i++) {
+		for (int j = i + 1; j < length; j++) {
+			if (strcmp(list[i], list[j]) > 0) {
+				swap(list, i, j);
+				printf("swapping %s with %s\n", list[i], list[j]);
+			}
+		}
+		printf("list[%d] is %s\n", i, list[i]);
+	}
+}
