@@ -3,6 +3,7 @@
 #include "kernel/fcntl.h"
 #include "user/user.h"
 #include <stdbool.h>
+#include <stddef.h>
 
 //
 // wrapper so that it's OK if main() does not call exit().
@@ -190,12 +191,31 @@ memcpy(void *dst, const void *src, uint n)
 }
 
 
-void
-uniq(int fd){
 
+void
+uniq(int fd, char *argv[]){
   int sz = 10; int count = 0;
-  char *line = malloc(sz);
-  char *lines[1024];
+  char *line = malloc(sz); int j = 0;
+  char *lines[1024]; bool cflag = false;
+  // bool wflag = false; bool wcflag = false;
+
+  while(argv[j] != NULL){
+	if(!strcmp(argv[j], "-c")){
+	   cflag = true;
+	}
+
+	/*else if(!strcmp(arg[j], "-w")){
+	   wflag = true;
+	}
+
+	else if(!strcmp(arg[j], "-wc")){
+	   wcflag = true;
+	} */
+
+	j++;
+  }
+	
+  
 
   while (true) {
     if (getline(&line, &sz, fd) <= 0) {
@@ -215,7 +235,6 @@ uniq(int fd){
      printf("line %d is %s\n", i, lines[i])
   */
   
-
   int i = 0; int current = 0;
   while(i < count){
 
@@ -224,7 +243,7 @@ uniq(int fd){
 	}
 
 	else if(!strcmp(lines[i], "\0") || !strcmp(lines[i], "\n")) {
-	   
+	   continue;
 	}
 
 	else if(!strcmp(lines[i], lines[i-1])){
@@ -232,7 +251,13 @@ uniq(int fd){
 	}
 
 	else{
-	   printf("%d %s", current, lines[i]);
+	   if(cflag){
+		printf("%d %s", current, lines[i]);
+	   }
+		
+	   else{
+		printf("%s", lines[i]);
+	   }
 	   current = 1;
 	}	
 
@@ -243,6 +268,7 @@ uniq(int fd){
 
 
 }
+
 
 void
 swap(char * list[], int i, int j) {
