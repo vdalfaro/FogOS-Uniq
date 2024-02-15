@@ -191,6 +191,12 @@ memcpy(void *dst, const void *src, uint n)
 }
 
 
+//TODO; SPLIT wc/c follows
+// -- split needs to use strchr in theory to find the first index of ' '
+// -- split is going to be the end of us
+// -- slowly losing my mind upon finding out split sucks
+//TODO: SIZE: fix
+//GENERALIZE: ARGV
 
 void
 uniq(int fd, char *argv[]){
