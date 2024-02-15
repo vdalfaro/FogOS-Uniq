@@ -200,19 +200,18 @@ uniq(int fd, char *argv[]){
   // bool wflag = false; bool wcflag = false;
 
   while(argv[j] != NULL){
-	if(!strcmp(argv[j], "-c")){
-	   cflag = true;
-	}
+		if(!strcmp(argv[j], "-c")){ // || strcmp -wc
+	  	cflag = true;
+		}
+		else if(!strcmp(arg[j], "-w")){
+	  	wflag = true;
+		}
 
-	/*else if(!strcmp(arg[j], "-w")){
-	   wflag = true;
-	}
-
-	else if(!strcmp(arg[j], "-wc")){
+	/*else if(!strcmp(arg[j], "-wc")){
 	   wcflag = true;
 	} */
 
-	j++;
+		j++;
   }
 	
   
@@ -224,7 +223,19 @@ uniq(int fd, char *argv[]){
 
     lines[count] = line;
     count++;
-  }  
+  }
+  if (wflag) {
+  	// would wflag use fgets because we want to split it
+  	// at the \n and \r?
+  	// or use strchr and find the first instance of a " " and 
+  	// split it
+
+		for (int i = 0; i < count; i++) { // loop over each line
+			for (int j = 0; line[i][j] != ' '; j ++) {
+				
+			}
+		}
+  }
 
   //printf("%s\n", lines[0]);
   /*for (int i = 0; i < count; i++) {
@@ -238,35 +249,29 @@ uniq(int fd, char *argv[]){
   int i = 0; int current = 0;
   while(i < count){
 
-	if(i == 0){
-	   current++;
-	}
+		if(i == 0){
+		   current++;
+		}
+		else if(!strcmp(lines[i], "\0") || !strcmp(lines[i], "\n")) {
+		   continue;
+		}
+		else if(!strcmp(lines[i], lines[i-1])){
+		   current++;
+		}
 
-	else if(!strcmp(lines[i], "\0") || !strcmp(lines[i], "\n")) {
-	   continue;
-	}
+		else{
+			if(cflag){
+				printf("%d %s", current, lines[i]);
+		  }
+		  else{
+				printf("%s", lines[i]);
+		  }
+		  current = 1;
+		}	
 
-	else if(!strcmp(lines[i], lines[i-1])){
-	   current++;
-	}
-
-	else{
-	   if(cflag){
-		printf("%d %s", current, lines[i]);
-	   }
-		
-	   else{
-		printf("%s", lines[i]);
-	   }
-	   current = 1;
-	}	
-
-	//printf("%d %s", current, lines[i]);
-	i++;
-
+		//printf("%d %s", current, lines[i]);
+		i++;
   }
-
-
 }
 
 
