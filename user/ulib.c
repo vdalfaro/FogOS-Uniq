@@ -237,6 +237,15 @@ uniq(int fd, char *argv[]){
   	// or use strchr and find the first instance of a " " and 
   	// split it
 
+		// instead of implementing split:
+		// 	have a command so that we can do a 
+		//  cat file & sort
+		//  and have what the cat produced go into a file and then
+		//  have a program that finds all the unique instances of a file
+		//  and put that into a file
+		//  and then have that be the input for uniq (pipe it into that?)
+		//  so then uniq doesn't do just lines but can do words
+		//  so we need to split the getline & the printing below.
 		for (int i = 0; i < count; i++) { // loop over each line
 			// for (int j = 0; line[i][j] != ' '; j ++) {
 			// 	
