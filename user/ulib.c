@@ -203,13 +203,14 @@ uniq(int fd, char *argv[]){
   int sz = 10; int count = 0;
   char *line = malloc(sz); int j = 0;
   char *lines[1024]; bool cflag = false;
+  bool wflag = false;
   // bool wflag = false; bool wcflag = false;
 
   while(argv[j] != NULL){
 		if(!strcmp(argv[j], "-c")){ // || strcmp -wc
 	  	cflag = true;
 		}
-		else if(!strcmp(arg[j], "-w")){
+		else if(!strcmp(argv[j], "-w")){
 	  	wflag = true;
 		}
 
@@ -237,9 +238,9 @@ uniq(int fd, char *argv[]){
   	// split it
 
 		for (int i = 0; i < count; i++) { // loop over each line
-			for (int j = 0; line[i][j] != ' '; j ++) {
-				
-			}
+			// for (int j = 0; line[i][j] != ' '; j ++) {
+			// 	
+			// }
 		}
   }
 
@@ -252,16 +253,19 @@ uniq(int fd, char *argv[]){
      printf("line %d is %s\n", i, lines[i])
   */
   
-  int i = 0; int current = 0;
+  int i = 0; // keeps track of which line we're at
+  int current = 0; // keeps track of how many instances?
   while(i < count){
 
 		if(i == 0){
 		   current++;
 		}
-		else if(!strcmp(lines[i], "\0") || !strcmp(lines[i], "\n")) {
+		else if((strcmp(lines[i], "\0") == 0) || (strcmp(lines[i], "\n") == 0)) {
+			 // current = 1;
 		   continue;
 		}
-		else if(!strcmp(lines[i], lines[i-1])){
+		else if(strcmp(lines[i], lines[i + 1]) == 0){
+			 // printf("adding 1 to %d for %s\n", current, lines[i]);
 		   current++;
 		}
 
