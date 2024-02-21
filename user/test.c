@@ -7,8 +7,10 @@
 
 int main(int argc, char *argv[]){
 
-  int fd = open(argv[1], O_RDONLY);
-  uniq(fd, argv);;
+  // int fd = open(argv[1], O_RDONLY);
+  // printf("opened argv[1]\n");
+  // printf("fd: %d\n", fd);
+  uniq(argv);
   return 0;
 
 }

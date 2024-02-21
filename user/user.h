@@ -42,5 +42,6 @@ void free(void*);
 int atoi(const char*);
 int memcmp(const void *, const void *, uint);
 void *memcpy(void *, const void *, uint);
-void uniq(int file, char *argv[]);
+// void uniq(int file, char *argv[]);
+void uniq(char *argv[]);
 void bubble_sort(char *list[], int length);
