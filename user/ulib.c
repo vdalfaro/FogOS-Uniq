@@ -204,9 +204,9 @@ writewords(char *line, int fd){
       fprintf(fd, "%c", *character);
     }
     character++;
-    }
+  }
  
-		return 0;
+	return 0;
 }
 
 
@@ -217,13 +217,17 @@ writewords(char *line, int fd){
 //GENERALIZE: ARGV
 
 void
-uniq(int fd, char *argv[]){
+uniq(char *argv[]) {
+	int fd = open(argv[1], O_RDONLY);
+	printf("in uniq 1\n");
   int sz = 10; int count = 0;
   char *line = malloc(sz); int j = 0;
   char *lines[1024]; bool cflag = false;
   bool wflag = false;
+  printf("in uniq 2\n");
   // bool wflag = false; bool wcflag = false;
   int write = open("/temp.txt", O_CREATE | O_RDWR);
+  printf("opened temp\n");
 
   while(argv[j] != NULL){
 		if(!strcmp(argv[j], "-c")){ // || strcmp -wc
@@ -241,7 +245,6 @@ uniq(int fd, char *argv[]){
 		j++;
   }
 	
-  
 
   while (true) {
     if (getline(&line, &sz, fd) <= 0) {
@@ -255,13 +258,28 @@ uniq(int fd, char *argv[]){
     lines[count] = line;
     count++;
   }
+  // try new getline here where we do a
+  int wordcount = 0;
+  char *words[1024];
+  char *word = malloc(sz);
+  while (true) {
+    if (getline(&word, &sz, write) <= 0) {
+      break;
+    }
+
+    words[wordcount] = word;
+    printf("current word: %s\n", word);
+    wordcount++;
+    printf("wordcount: %d\n", wordcount);
+  }
+  bubble_sort(words, wordcount);
 
   
   bubble_sort(lines, count);
   
   int i = 0; // keeps track of which line we're at
   int current = 0; // keeps track of how many instances?
-  while(i < count){
+/*  while(i < count){
 
 		if(i == 0){
 		   current++;
@@ -286,7 +304,35 @@ uniq(int fd, char *argv[]){
 		}	
 
 		i++;
+  }*/
+
+	while(i < wordcount){
+
+		if(i == 0){
+		   current++;
+		}
+		else if((strcmp(words[i], "\0") == 0) || (strcmp(words[i], "\n") == 0)) {
+			 // current = 1;
+		   continue;
+		}
+		else if(strcmp(words[i], words[i + 1]) == 0){
+			 // printf("adding 1 to %d for %s\n", current, lines[i]);
+		   current++;
+		}
+
+		else{
+			if(cflag){
+				printf("%d %s", current, words[i]);
+		  }
+		  else{
+				printf("%s", words[i]);
+		  }
+		  current = 1;
+		}	
+
+		i++;
   }
+  
 }
 
 
