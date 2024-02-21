@@ -190,6 +190,22 @@ memcpy(void *dst, const void *src, uint n)
   return memmove(dst, src, n);
 }
 
+void *
+writewords(char *line){
+  char *character = &line[0];
+  while(*character != '\0'){
+   	if (*character == ' ') {
+      printf("\n");
+    }
+    else{
+      printf("%c", *character);
+    }
+    character++;
+    }
+ 
+		return 0;
+}
+
 
 //TODO; SPLIT wc/c follows
 // -- split needs to use strchr in theory to find the first index of ' '
@@ -202,17 +218,17 @@ uniq(int fd, char *argv[]){
   int sz = 10; int count = 0;
   char *line = malloc(sz); int j = 0;
   char *lines[1024]; bool cflag = false;
-  //bool wflag = false;
+  bool wflag = false;
   // bool wflag = false; bool wcflag = false;
 
   while(argv[j] != NULL){
 		if(!strcmp(argv[j], "-c")){ // || strcmp -wc
 	  	cflag = true;
 		}
-		/*else if(!strcmp(argv[j], "-w")){
+	
 		else if(!strcmp(argv[j], "-w")){
 	  	wflag = true;
-		}*/
+		}
 
 		/*else if(!strcmp(arg[j], "-wc")){
 	   	wcflag = true;
@@ -228,16 +244,8 @@ uniq(int fd, char *argv[]){
       break;
     }
 
-		//THIS CAN BE A FUNCTION
-	  char *character = &line[0];
-		while(*character != '\0'){
-			if (*character == ' ') {
-				printf("\n");
-			}
-			else{
-				printf("%c", *character);
-			}
-			character++;
+		if(wflag){
+			writewords(line);
 		}
 
     lines[count] = line;
