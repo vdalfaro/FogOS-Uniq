@@ -192,13 +192,16 @@ memcpy(void *dst, const void *src, uint n)
 
 void *
 writewords(char *line){
+  int fd = open("/user/temp.txt", O_CREATE);
   char *character = &line[0];
   while(*character != '\0'){
    	if (*character == ' ') {
-      printf("\n");
+      // printf("\n");
+      fprintf(fd, "\n");
     }
     else{
-      printf("%c", *character);
+      // printf("%c", *character);
+      fprintf(fd, "%c", *character);
     }
     character++;
     }
