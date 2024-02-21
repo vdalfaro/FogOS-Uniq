@@ -193,8 +193,7 @@ memcpy(void *dst, const void *src, uint n)
 
 //TODO; SPLIT wc/c follows
 // -- split needs to use strchr in theory to find the first index of ' '
-// -- split is going to be the end of us
-// -- slowly losing my mind upon finding out split sucks
+// -- write word by word to another file and then use that file for the wc
 //TODO: SIZE: fix
 //GENERALIZE: ARGV
 
@@ -227,9 +226,17 @@ uniq(int fd, char *argv[]){
       break;
     }
 
+		//THIS CAN BE A FUNCTION
 	  char *character = &line[0];
 		while(*character != '\0'){
-			printf("%c\n", *character);
+			if(!strcmp(character, " ")){
+				printf("\n");
+			}
+
+			else{
+				printf("%c", *character);
+			}
+			
 			character++;
 		}
 
@@ -239,6 +246,7 @@ uniq(int fd, char *argv[]){
   
   bubble_sort(lines, count);
   
+	//THIS CAN BE A FUNCTIOn
   int i = 0; int current = 0;
   while(i < count){
 
@@ -254,10 +262,10 @@ uniq(int fd, char *argv[]){
 
 		else{
 			if(cflag){
-				printf("%d %s", current, lines[i]);
+				//printf("%d %s", current, lines[i]);
 		  }
 		  else{
-				printf("%s", lines[i]);
+				//printf("%s", lines[i]);
 		  }
 		  current = 1;
 		}	
