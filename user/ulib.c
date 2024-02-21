@@ -227,7 +227,7 @@ uniq(int fd, char *argv[]){
 
   while(argv[j] != NULL){
 		if(!strcmp(argv[j], "-c")){ // || strcmp -wc
-	  	cflag = true
+	  	cflag = true;
 		}
 	
 		else if(!strcmp(argv[j], "-w")){
