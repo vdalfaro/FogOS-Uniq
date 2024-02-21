@@ -191,8 +191,8 @@ memcpy(void *dst, const void *src, uint n)
 }
 
 void *
-writewords(char *line){
-  int fd = open("/user/temp.txt", O_CREATE);
+writewords(char *line, int fd){
+
   char *character = &line[0];
   while(*character != '\0'){
    	if (*character == ' ') {
@@ -223,6 +223,7 @@ uniq(int fd, char *argv[]){
   char *lines[1024]; bool cflag = false;
   bool wflag = false;
   // bool wflag = false; bool wcflag = false;
+  int write = open("/temp.txt", O_CREATE | O_RDWR);
 
   while(argv[j] != NULL){
 		if(!strcmp(argv[j], "-c")){ // || strcmp -wc
@@ -248,7 +249,7 @@ uniq(int fd, char *argv[]){
     }
 
 		if(wflag){
-			writewords(line);
+			writewords(line, write);
 		}
 
     lines[count] = line;
