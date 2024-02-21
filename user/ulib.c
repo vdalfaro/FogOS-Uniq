@@ -209,9 +209,9 @@ uniq(int fd, char *argv[]){
 		if(!strcmp(argv[j], "-c")){ // || strcmp -wc
 	  	cflag = true;
 		}
-		else if(!strcmp(arg[j], "-w")){
+		/*else if(!strcmp(argv[j], "-w")){
 	  	wflag = true;
-		}
+		}*/
 
 	/*else if(!strcmp(arg[j], "-wc")){
 	   wcflag = true;
@@ -227,30 +227,17 @@ uniq(int fd, char *argv[]){
       break;
     }
 
+	  char *character = &line[0];
+		while(*character != '\0'){
+			printf("%c\n", *character);
+			character++;
+		}
+
     lines[count] = line;
     count++;
   }
-  if (wflag) {
-  	// would wflag use fgets because we want to split it
-  	// at the \n and \r?
-  	// or use strchr and find the first instance of a " " and 
-  	// split it
-
-		for (int i = 0; i < count; i++) { // loop over each line
-			for (int j = 0; line[i][j] != ' '; j ++) {
-				
-			}
-		}
-  }
-
-  //printf("%s\n", lines[0]);
-  /*for (int i = 0; i < count; i++) {
-     printf("line %d is %s\n", i, lines[i]);
-  }*/
+  
   bubble_sort(lines, count);
-  /*for (int i = 0; i < count; i++) {
-     printf("line %d is %s\n", i, lines[i])
-  */
   
   int i = 0; int current = 0;
   while(i < count){
@@ -275,7 +262,6 @@ uniq(int fd, char *argv[]){
 		  current = 1;
 		}	
 
-		//printf("%d %s", current, lines[i]);
 		i++;
   }
 }
