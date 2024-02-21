@@ -202,6 +202,7 @@ uniq(int fd, char *argv[]){
   int sz = 10; int count = 0;
   char *line = malloc(sz); int j = 0;
   char *lines[1024]; bool cflag = false;
+  //bool wflag = false;
   // bool wflag = false; bool wcflag = false;
 
   while(argv[j] != NULL){
@@ -209,12 +210,13 @@ uniq(int fd, char *argv[]){
 	  	cflag = true;
 		}
 		/*else if(!strcmp(argv[j], "-w")){
+		else if(!strcmp(argv[j], "-w")){
 	  	wflag = true;
 		}*/
 
-	/*else if(!strcmp(arg[j], "-wc")){
-	   wcflag = true;
-	} */
+		/*else if(!strcmp(arg[j], "-wc")){
+	   	wcflag = true;
+		} */
 
 		j++;
   }
@@ -247,16 +249,51 @@ uniq(int fd, char *argv[]){
   bubble_sort(lines, count);
   
 	//THIS CAN BE A FUNCTIOn
-  int i = 0; int current = 0;
+  /*int i = 0; int current = 0;
+  if (wflag) {
+  	// would wflag use fgets because we want to split it
+  	// at the \n and \r?
+  	// or use strchr and find the first instance of a " " and 
+  	// split it
+
+		// instead of implementing split:
+		// 	have a command so that we can do a 
+		//  cat file & sort
+		//  and have what the cat produced go into a file and then
+		//  have a program that finds all the unique instances of a file
+		//  and put that into a file
+		//  and then have that be the input for uniq (pipe it into that?)
+		//  so then uniq doesn't do just lines but can do words
+		//  so we need to split the getline & the printing below.
+		for (int i = 0; i < count; i++) { // loop over each line
+			// for (int j = 0; line[i][j] != ' '; j ++) {
+			// 	
+			// }
+		}
+  }*/
+
+  //printf("%s\n", lines[0]);
+  /*for (int i = 0; i < count; i++) {
+     printf("line %d is %s\n", i, lines[i]);
+  }*/
+  bubble_sort(lines, count);
+  /*for (int i = 0; i < count; i++) {
+     printf("line %d is %s\n", i, lines[i])
+  */
+  
+  int i = 0; // keeps track of which line we're at
+  int current = 0; // keeps track of how many instances?
   while(i < count){
 
 		if(i == 0){
 		   current++;
 		}
-		else if(!strcmp(lines[i], "\0") || !strcmp(lines[i], "\n")) {
+		else if((strcmp(lines[i], "\0") == 0) || (strcmp(lines[i], "\n") == 0)) {
+			 // current = 1;
 		   continue;
 		}
-		else if(!strcmp(lines[i], lines[i-1])){
+		else if(strcmp(lines[i], lines[i + 1]) == 0){
+			 // printf("adding 1 to %d for %s\n", current, lines[i]);
 		   current++;
 		}
 
