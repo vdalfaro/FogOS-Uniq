@@ -234,9 +234,6 @@ uniq(int fd, char *argv[]){
 			if (*character == ' ') {
 				printf("\n");
 			}
-			// if(strcmp(*character, " ") == 0){
-			// 	printf("\n new line \n");
-			// }
 			else{
 				printf("%c", *character);
 			}
