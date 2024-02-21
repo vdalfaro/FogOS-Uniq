@@ -231,14 +231,15 @@ uniq(int fd, char *argv[]){
 		//THIS CAN BE A FUNCTION
 	  char *character = &line[0];
 		while(*character != '\0'){
-			if(!strcmp(character, " ")){
+			if (*character == ' ') {
 				printf("\n");
 			}
-
+			// if(strcmp(*character, " ") == 0){
+			// 	printf("\n new line \n");
+			// }
 			else{
 				printf("%c", *character);
 			}
-			
 			character++;
 		}
 
@@ -276,7 +277,7 @@ uniq(int fd, char *argv[]){
   /*for (int i = 0; i < count; i++) {
      printf("line %d is %s\n", i, lines[i]);
   }*/
-  bubble_sort(lines, count);
+  // bubble_sort(lines, count);
   /*for (int i = 0; i < count; i++) {
      printf("line %d is %s\n", i, lines[i])
   */
