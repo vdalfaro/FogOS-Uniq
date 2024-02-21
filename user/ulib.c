@@ -210,6 +210,37 @@ writewords(char *line, int fd){
 }
 
 
+void print_uniq(int count, char *lines[], bool cflag){
+  int i = 0; // keeps track of which line we're at
+  int current = 0; // keeps track of how many instances?
+  while(i < count){
+
+    if(i == 0){
+       current++;
+    }
+    else if((strcmp(lines[i], "\0") == 0) || (strcmp(lines[i], "\n") == 0)) {
+       continue;
+    }
+    else if(strcmp(lines[i], lines[i + 1]) == 0){
+       current++;
+    }
+
+    else{
+      if(cflag){
+        printf("%d %s", current, lines[i]);
+      }
+      else{
+        printf("%s", lines[i]);
+      }
+      current = 1;
+    }
+
+    i++;
+  }
+
+}
+
+
 //TODO; SPLIT wc/c follows
 // -- split needs to use strchr in theory to find the first index of ' '
 // -- write word by word to another file and then use that file for the wc
@@ -217,17 +248,15 @@ writewords(char *line, int fd){
 //GENERALIZE: ARGV
 
 void
-uniq(char *argv[]) {
-	int fd = open(argv[1], O_RDONLY);
-	printf("in uniq 1\n");
+uniq(char *argv[], int fd) {
+  
   int sz = 10; int count = 0;
   char *line = malloc(sz); int j = 0;
   char *lines[1024]; bool cflag = false;
   bool wflag = false;
-  printf("in uniq 2\n");
   // bool wflag = false; bool wcflag = false;
-  int write = open("/temp.txt", O_CREATE | O_RDWR);
-  printf("opened temp\n");
+  
+	int write = open("/temp.txt", O_CREATE | O_RDWR);
 
   while(argv[j] != NULL){
 		if(!strcmp(argv[j], "-c")){ // || strcmp -wc
@@ -244,7 +273,6 @@ uniq(char *argv[]) {
 
 		j++;
   }
-	
 
   while (true) {
     if (getline(&line, &sz, fd) <= 0) {
@@ -258,83 +286,32 @@ uniq(char *argv[]) {
     lines[count] = line;
     count++;
   }
+
+	
   // try new getline here where we do a
-  int wordcount = 0;
+  /*int wordcount = 0;
   char *words[1024];
   char *word = malloc(sz);
-  while (true) {
-    if (getline(&word, &sz, write) <= 0) {
-      break;
-    }
+	if(wflag){
+  	while (true) {
+			 printf("hello\n");
+    	if (getline(&word, &sz, write) <= 0) {
+      	break;
+    	}
 
-    words[wordcount] = word;
-    printf("current word: %s\n", word);
-    wordcount++;
-    printf("wordcount: %d\n", wordcount);
-  }
-  bubble_sort(words, wordcount);
+    	words[wordcount] = word;
+    	printf("current word: %s\n", word);
+    	wordcount++;
+    	printf("wordcount: %d\n", wordcount);
+  	}
+  }*/
 
   
   bubble_sort(lines, count);
-  
-  int i = 0; // keeps track of which line we're at
-  int current = 0; // keeps track of how many instances?
-/*  while(i < count){
-
-		if(i == 0){
-		   current++;
-		}
-		else if((strcmp(lines[i], "\0") == 0) || (strcmp(lines[i], "\n") == 0)) {
-			 // current = 1;
-		   continue;
-		}
-		else if(strcmp(lines[i], lines[i + 1]) == 0){
-			 // printf("adding 1 to %d for %s\n", current, lines[i]);
-		   current++;
-		}
-
-		else{
-			if(cflag){
-				printf("%d %s", current, lines[i]);
-		  }
-		  else{
-				printf("%s", lines[i]);
-		  }
-		  current = 1;
-		}	
-
-		i++;
-  }*/
-
-	while(i < wordcount){
-
-		if(i == 0){
-		   current++;
-		}
-		else if((strcmp(words[i], "\0") == 0) || (strcmp(words[i], "\n") == 0)) {
-			 // current = 1;
-		   continue;
-		}
-		else if(strcmp(words[i], words[i + 1]) == 0){
-			 // printf("adding 1 to %d for %s\n", current, lines[i]);
-		   current++;
-		}
-
-		else{
-			if(cflag){
-				printf("%d %s", current, words[i]);
-		  }
-		  else{
-				printf("%s", words[i]);
-		  }
-		  current = 1;
-		}	
-
-		i++;
-  }
+	print_uniq(count, lines, cflag);  
+		 
   
 }
-
 
 void
 swap(char * list[], int i, int j) {
