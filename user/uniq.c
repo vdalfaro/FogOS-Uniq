@@ -7,9 +7,16 @@
 
 int main(int argc, char *argv[]){
 
+	if (argc < 2) {
+		printf("usage: uniq filename [-w] [-c] [-wc]\n");
+		return -1;
+	}
+
   int fd = open(argv[1], O_RDONLY);
-  // printf("opened argv[1]\n");
-  //printf("fd: %d\n", fd);
+  if (fd < 1) {
+  	printf("err opening file\n");
+  	return -1;
+  }
   uniq(argv, fd);
   return 0;
 

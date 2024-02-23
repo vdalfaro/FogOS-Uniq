@@ -190,17 +190,21 @@ memcpy(void *dst, const void *src, uint n)
   return memmove(dst, src, n);
 }
 
+/*
+* writes a line word by word to a given file
+*
+* @param line to write
+* @param fd file descriptor to write to
+*/
 void *
 writewords(char *line, int fd){
-
+	// first char we check is the start of the line
   char *character = &line[0];
-  while(*character != '\0'){
-   	if (*character == ' ') {
-      // printf("\n");
+  while (*character != '\0') { // while we aren't at the end
+   	if (*character == ' ') { // if we reach the end of a word
       fprintf(fd, "\n");
     }
-    else{
-      // printf("%c", *character);
+    else {
       fprintf(fd, "%c", *character);
     }
     character++;
@@ -209,37 +213,54 @@ writewords(char *line, int fd){
 	return 0;
 }
 
-
-void print_uniq(int count, char *lines[], bool cflag){
-  int i = 0; // keeps track of which line we're at
-  int current = 0; // keeps track of how many instances?
-  while(i < count){
-    if(i == 0){
-       current++;
+/*
+* prints out the uniq instances from a provided sorted
+* char* array
+*
+* @param count max num of lines or words
+* @param lines array of lines or words
+* @param cflag boolean for the -c flag
+*/
+void print_uniq(int count, char *lines[], bool cflag) {
+  int curr = 0; // keeps track of which line we're at
+  int instances = 0; // keeps track of how many instances
+  while(curr < count) { // while we still have stuff to read
+    if (curr == 0) {
+       instances++; // everything has at least one instance 
     }
-    else if((strcmp(lines[i], "\0") == 0) || (strcmp(lines[i], "\n") == 0)) {
+    // skip null terms and line ends
+    else if ((strcmp(lines[curr], "\0") == 0) || (strcmp(lines[curr], "\n") == 0)) {
        continue;
     }
-    else if(strcmp(lines[i], lines[i + 1]) == 0){
-       current++;
+    // if this is the same as the next, increment current
+    else if (strcmp(lines[curr], lines[curr + 1]) == 0) {
+       instances++;
+    }
+		// if we have hit the last uniq instance, print it out
+    else {
+      if (cflag) { // with count
+        printf("%d %s", instances, lines[curr]);
+      }
+      else { // without count
+        printf("%s", lines[curr]);
+      }
+      instances = 1;
     }
 
-    else{
-      if(cflag){
-        printf("%d %s", current, lines[i]);
-      }
-      else{
-        printf("%s", lines[i]);
-      }
-      current = 1;
-    }
-
-    i++;
+    curr++;
   }
 }
 
-void lines(int fd, bool cflag){
-	int sz = 10; int count = 0;
+/*
+* creates a char * of all the lines from a given file and
+* prints out all the unique lines
+*
+* @param fd file descriptor of file to read
+* @param cflag boolean for the -c flag
+*/
+void lines(int fd, bool cflag) {
+	int sz = 10; // getline will resize if necessary
+	int count = 0; // num of lines
   char *line = malloc(sz);
   char *lines[1024];
 
@@ -252,13 +273,22 @@ void lines(int fd, bool cflag){
     count++;
   }	
 
-	bubble_sort(lines, count);
-  print_uniq(count, lines, cflag);
+	bubble_sort(lines, count); // sort all the lines
+  print_uniq(count, lines, cflag); // print uniq instances
 }
 
+/*
+* creates a char * of all the words from a given file and
+* prints out all the unique words
+*
+* @param fd file descriptor of file to read
+* @param cflag boolean for the -c flag
+*/
 void words(int fd, bool cflag){
-	int sz = 10; int count = 0;
+	int sz = 10; // getline will resize if necessary
+	int count = 0; // num of lines
   char *line = malloc(sz);
+  // file we are writing the words to
 	int write = open("/temp.txt", O_CREATE | O_WRONLY);
 
 	while (true) {
@@ -269,9 +299,12 @@ void words(int fd, bool cflag){
     writewords(line, write);
     count++;
   }
-	
+  close(write);
+	// have to close & reopen file because xv6 hates us
+
+	// file to now read the words from
 	int read = open("/temp.txt", O_RDONLY);
-  int wordcount = 0;
+  int wordcount = 0; // num words
   char *words[1024];
   int newsize = 10;
   char *word = malloc(newsize);
@@ -282,42 +315,55 @@ void words(int fd, bool cflag){
     }
       
     words[wordcount] = word;
-     wordcount++;
-    }
-
-  close(write);
-	bubble_sort(words, wordcount);
-  print_uniq(wordcount, words, cflag);
+    wordcount++;
+  }
+  close(read);
+  
+	bubble_sort(words, wordcount); // sort all the words
+  print_uniq(wordcount, words, cflag); // print unique words
 }
 
+/*
+* creates a char * of all the lines from a given file and
+* prints out all the unique lines
+*
+* @param argv array of args to check for flags
+* @param fd file descriptor of file to read
+*/
 void
 uniq(char *argv[], int fd) {
-  
 	int j = 0; 
 
   //FINDING PROPER FLAGS
-  while(argv[j] != NULL){
-		if(!strcmp(argv[j], "-c")){
+  while (argv[j] != NULL) {
+		if (!strcmp(argv[j], "-c")) {
 	  	lines(fd, true);
 			return;
 		}
 
-		else if(!strcmp(argv[j], "-wc")){
+		else if (!strcmp(argv[j], "-wc")) {
 			words(fd, true);
 			return;
 		}
 	
-		else if(!strcmp(argv[j], "-w")){
+		else if (!strcmp(argv[j], "-w")) {
 	  	words(fd, false);
 			return;
 		}
-	
 		j++;
 	}
-
+	
 	lines(fd, false);
 }
 
+/*
+* helper function for sort that swaps two
+* values from an array
+*
+* @param array to swap in
+* @param i one index to swap
+* @param j other index to swap
+*/
 void
 swap(char * list[], int i, int j) {
 	char * temp = list[i];
@@ -325,6 +371,12 @@ swap(char * list[], int i, int j) {
 	list[j] = temp;
 }
 
+/*
+* bubble sorts an array of char *
+*
+* @param array to sort
+* @param length of array
+*/
 void
 bubble_sort(char *list[], int length) {
 	for (int i = 0; i < length; i++) {
