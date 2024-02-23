@@ -288,13 +288,14 @@ uniq(char *argv[], int fd) {
 
 	
 	// this isn't working </3
-  int wordcount = 0;
-  char *words[1024];
-  char *word = malloc(sz);
-	printf("%s\n", word);
-	if(wflag){
+  //int wordcount = 0;
+  //char *words[1024];
+	int newsize = 10;
+  char *word = malloc(newsize);
+	printf("%s\n", getline(&word, &newsize, read));
+	/*if(wflag){
   	while (true) {
-    	if (getline(&word, &sz, read) <= 0) {
+    	if (getline(&word, &newsize, read) <= 0) {
       	break;
     	}
 			
@@ -303,7 +304,7 @@ uniq(char *argv[], int fd) {
     	words[wordcount] = word;
     	wordcount++;
   	}
-  }
+  }*/
   close(read);
 
   
