@@ -249,7 +249,7 @@ uniq(char *argv[], int fd) {
   
   int sz = 10; int count = 0;
   char *line = malloc(sz); int j = 0;
-  // char *lines[1024]; 
+  char *lines[1024]; 
   bool cflag = false; bool wflag = false;
   
 	int write = open("/temp.txt", O_CREATE | O_WRONLY);
@@ -278,38 +278,36 @@ uniq(char *argv[], int fd) {
 			writewords(line, write);
 		}
 
-    // lines[count] = line;
+    lines[count] = line;
     count++;
   }
   close(write);
-  printf("closed write\n");
-  int read = open("/temp.txt", O_RDONLY);
-
-	
-	// this isn't working </3
-  int wordcount = 0;
-  char *words[1024];
-	int newsize = 10;
-  char *word = malloc(newsize);
-	// printf("%d\n", getline(&word, &newsize, read));
-  // printf("%s\n", word);
-	if(wflag){
-  	while (true) {
-    	if (getline(&word, &newsize, read) <= 0) {
-      	break;
-    	}
-			
-    	words[wordcount] = word;
-    	wordcount++;
-  	}
-  }
-  close(read);
-
-	bubble_sort(words, wordcount);
-	print_uniq(wordcount, words, cflag);
   
- //  bubble_sort(lines, count);
-	// print_uniq(count, lines, cflag);  
+	if(wflag){
+		int read = open("/temp.txt", O_RDONLY);
+  	int wordcount = 0;
+  	char *words[1024];
+		int newsize = 10;
+  	char *word = malloc(newsize);
+		if(wflag){
+  		while (true) {
+    		if (getline(&word, &newsize, read) <= 0) {
+      		break;
+    		}
+			
+    		words[wordcount] = word;
+    		wordcount++;
+  		}
+  	}
+  	close(read);
+		bubble_sort(words, wordcount);
+		print_uniq(wordcount, words, cflag);
+	}
+  
+  else{
+		bubble_sort(lines, count);
+		print_uniq(count, lines, cflag);  
+  }
 }
 
 void
