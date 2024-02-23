@@ -214,7 +214,6 @@ void print_uniq(int count, char *lines[], bool cflag){
   int i = 0; // keeps track of which line we're at
   int current = 0; // keeps track of how many instances?
   while(i < count){
-
     if(i == 0){
        current++;
     }
@@ -237,7 +236,6 @@ void print_uniq(int count, char *lines[], bool cflag){
 
     i++;
   }
-
 }
 
 
@@ -246,20 +244,19 @@ void print_uniq(int count, char *lines[], bool cflag){
 // -- write word by word to another file and then use that file for the wc
 //TODO: SIZE: fix
 //GENERALIZE: ARGV
-
 void
 uniq(char *argv[], int fd) {
   
   int sz = 10; int count = 0;
   char *line = malloc(sz); int j = 0;
-  char *lines[1024]; bool cflag = false;
-  bool wflag = false;
-  // bool wflag = false; bool wcflag = false;
+  char *lines[1024]; 
+  bool cflag = false; bool wflag = false;
   
 	int write = open("/temp.txt", O_CREATE | O_RDWR);
 
+  //FINDING PROPER FLAGS
   while(argv[j] != NULL){
-		if(!strcmp(argv[j], "-c")){ // || strcmp -wc
+		if(!strcmp(argv[j], "-c") || !strcmp(argv[j], "-wc")){
 	  	cflag = true;
 		}
 	
@@ -267,13 +264,10 @@ uniq(char *argv[], int fd) {
 	  	wflag = true;
 		}
 
-		/*else if(!strcmp(arg[j], "-wc")){
-	   	wcflag = true;
-		} */
-
 		j++;
   }
 
+  //PARSING THROUGH FILE, WRITING WORDS IF NECESSARY
   while (true) {
     if (getline(&line, &sz, fd) <= 0) {
       break;
@@ -288,29 +282,29 @@ uniq(char *argv[], int fd) {
   }
 
 	
+
   // try new getline here where we do a
-  /*int wordcount = 0;
-  char *words[1024];
-  char *word = malloc(sz);
-	if(wflag){
+  //int wordcount = 0;
+  //char *words[1024];
+  //char *word = malloc(sz);
+	//printf("%d\n", getline(&word, &sz, write));
+	//printf("%s\n", word);
+	/*if(wflag){
   	while (true) {
-			 printf("hello\n");
     	if (getline(&word, &sz, write) <= 0) {
       	break;
     	}
+			
+			printf("%s\n", words[wordcount]);
 
     	words[wordcount] = word;
-    	printf("current word: %s\n", word);
     	wordcount++;
-    	printf("wordcount: %d\n", wordcount);
   	}
   }*/
 
   
   bubble_sort(lines, count);
 	print_uniq(count, lines, cflag);  
-		 
-  
 }
 
 void
@@ -326,9 +320,7 @@ bubble_sort(char *list[], int length) {
 		for (int j = i + 1; j < length; j++) {
 			if (strcmp(list[i], list[j]) > 0) {
 				swap(list, i, j);
-				//printf("swapping %s with %s\n", list[i], list[j]);
 			}
 		}
-		//printf("list[%d] is %s\n", i, list[i]);
 	}
 }
