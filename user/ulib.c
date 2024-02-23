@@ -282,8 +282,7 @@ uniq(char *argv[], int fd) {
   }
 
 	
-
-  //THIS ISNT FUCKING WORKING
+	// this isn't working </3
   /*int wordcount = 0;
   char *words[1024];
   char *word = malloc(sz);
