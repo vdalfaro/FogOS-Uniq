@@ -252,7 +252,7 @@ uniq(char *argv[], int fd) {
   char *lines[1024]; 
   bool cflag = false; bool wflag = false;
   
-	int write = open("/temp.txt", O_CREATE | O_RDWR);
+	int write = open("/temp.txt", O_CREATE | O_RDONLY);
 
   //FINDING PROPER FLAGS
   while(argv[j] != NULL){
@@ -268,6 +268,7 @@ uniq(char *argv[], int fd) {
   }
 
   //PARSING THROUGH FILE, WRITING WORDS IF NECESSARY
+  printf("before getline loop\n");
   while (true) {
     if (getline(&line, &sz, fd) <= 0) {
       break;
@@ -275,21 +276,25 @@ uniq(char *argv[], int fd) {
 
 		if(wflag){
 			writewords(line, write);
+			printf("wrote word\n");
 		}
 
     lines[count] = line;
     count++;
   }
+  close(write);
+  printf("closed write\n");
+  int read = open("/temp.txt", O_WRONLY);
 
 	
 	// this isn't working </3
-  /*int wordcount = 0;
+  int wordcount = 0;
   char *words[1024];
   char *word = malloc(sz);
 	printf("%s\n", word);
 	if(wflag){
   	while (true) {
-    	if (getline(&word, &sz, write) <= 0) {
+    	if (getline(&word, &sz, read) <= 0) {
       	break;
     	}
 			
@@ -298,7 +303,8 @@ uniq(char *argv[], int fd) {
     	words[wordcount] = word;
     	wordcount++;
   	}
-  }*/
+  }
+  close(read);
 
   
   bubble_sort(lines, count);
