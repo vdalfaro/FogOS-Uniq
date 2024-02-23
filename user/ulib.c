@@ -237,78 +237,85 @@ void print_uniq(int count, char *lines[], bool cflag){
     i++;
   }
 }
-// making change for ufn
 
+void lines(int fd, bool cflag){
+	int sz = 10; int count = 0;
+  char *line = malloc(sz);
+  char *lines[1024];
 
-//TODO; SPLIT wc/c follows
-// -- split needs to use strchr in theory to find the first index of ' '
-// -- write word by word to another file and then use that file for the wc
-//TODO: SIZE: fix
-//GENERALIZE: ARGV
-void
-uniq(char *argv[], int fd) {
-  
-  int sz = 10; int count = 0;
-  char *line = malloc(sz); int j = 0;
-  char *lines[1024]; 
-  bool cflag = false; bool wflag = false;
-  
-	int write = open("/temp.txt", O_CREATE | O_WRONLY);
-
-  //FINDING PROPER FLAGS
-  while(argv[j] != NULL){
-		if(!strcmp(argv[j], "-c") || !strcmp(argv[j], "-wc")){
-	  	cflag = true;
-		}
-	
-		else if(!strcmp(argv[j], "-w")){
-	  	wflag = true;
-		}
-
-		j++;
-  }
-
-  //PARSING THROUGH FILE, WRITING WORDS IF NECESSARY
-  printf("before getline loop\n");
-  while (true) {
+	while (true) {
     if (getline(&line, &sz, fd) <= 0) {
       break;
     }
 
-		if(wflag){
-			writewords(line, write);
-		}
-
     lines[count] = line;
     count++;
+  }	
+
+	bubble_sort(lines, count);
+  print_uniq(count, lines, cflag);
+}
+
+void words(int fd, bool cflag){
+	int sz = 10; int count = 0;
+  char *line = malloc(sz);
+	int write = open("/temp.txt", O_CREATE | O_WRONLY);
+
+	while (true) {
+    if (getline(&line, &sz, fd) <= 0) {
+      break;
+    }
+
+    writewords(line, write);
+    count++;
   }
+	
+	int read = open("/temp.txt", O_RDONLY);
+  int wordcount = 0;
+  char *words[1024];
+  int newsize = 10;
+  char *word = malloc(newsize);
+  
+  while (true) {
+    if(getline(&word, &newsize, read) <= 0) {
+      break;
+    }
+      
+    words[wordcount] = word;
+     wordcount++;
+    }
+
   close(write);
+	bubble_sort(words, wordcount);
+  print_uniq(wordcount, words, cflag);
+}
+
+void
+uniq(char *argv[], int fd) {
   
-	if(wflag){
-		int read = open("/temp.txt", O_RDONLY);
-  	int wordcount = 0;
-  	char *words[1024];
-		int newsize = 10;
-  	char *word = malloc(newsize);
-		if(wflag){
-  		while (true) {
-    		if (getline(&word, &newsize, read) <= 0) {
-      		break;
-    		}
-			
-    		words[wordcount] = word;
-    		wordcount++;
-  		}
-  	}
-  	close(read);
-		bubble_sort(words, wordcount);
-		print_uniq(wordcount, words, cflag);
+	int j = 0; 
+
+  //FINDING PROPER FLAGS
+  while(argv[j] != NULL){
+		if(!strcmp(argv[j], "-c")){
+	  	lines(fd, true);
+			return;
+		}
+
+		else if(!strcmp(argv[j], "-wc")){
+			words(fd, true);
+			return;
+		}
+	
+		else if(!strcmp(argv[j], "-w")){
+	  	words(fd, false);
+			return;
+		}
+	
+		j++;
 	}
-  
-  else{
-		bubble_sort(lines, count);
-		print_uniq(count, lines, cflag);  
-  }
+
+	lines(fd, false);
 }
 
 void
