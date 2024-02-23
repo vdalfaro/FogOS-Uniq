@@ -249,7 +249,7 @@ uniq(char *argv[], int fd) {
   
   int sz = 10; int count = 0;
   char *line = malloc(sz); int j = 0;
-  char *lines[1024]; 
+  // char *lines[1024]; 
   bool cflag = false; bool wflag = false;
   
 	int write = open("/temp.txt", O_CREATE | O_WRONLY);
@@ -276,10 +276,9 @@ uniq(char *argv[], int fd) {
 
 		if(wflag){
 			writewords(line, write);
-			printf("wrote word\n");
 		}
 
-    lines[count] = line;
+    // lines[count] = line;
     count++;
   }
   close(write);
@@ -288,29 +287,29 @@ uniq(char *argv[], int fd) {
 
 	
 	// this isn't working </3
-  //int wordcount = 0;
-  //char *words[1024];
+  int wordcount = 0;
+  char *words[1024];
 	int newsize = 10;
   char *word = malloc(newsize);
-	printf("%d\n", getline(&word, &newsize, read));
-  printf("%s\n", word);
+	// printf("%d\n", getline(&word, &newsize, read));
+  // printf("%s\n", word);
 	if(wflag){
   	while (true) {
     	if (getline(&word, &newsize, read) <= 0) {
       	break;
     	}
 			
-			printf("%s\n", word);
-
-    	//words[wordcount] = word;
-    	//wordcount++;
+    	words[wordcount] = word;
+    	wordcount++;
   	}
   }
   close(read);
 
+	bubble_sort(words, wordcount);
+	print_uniq(wordcount, words, cflag);
   
-  bubble_sort(lines, count);
-	print_uniq(count, lines, cflag);  
+ //  bubble_sort(lines, count);
+	// print_uniq(count, lines, cflag);  
 }
 
 void
