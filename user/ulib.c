@@ -283,13 +283,12 @@ uniq(char *argv[], int fd) {
 
 	
 
-  // try new getline here where we do a
-  //int wordcount = 0;
-  //char *words[1024];
-  //char *word = malloc(sz);
-	//printf("%d\n", getline(&word, &sz, write));
-	//printf("%s\n", word);
-	/*if(wflag){
+  //THIS ISNT FUCKING WORKING
+  /*int wordcount = 0;
+  char *words[1024];
+  char *word = malloc(sz);
+	printf("%s\n", word);
+	if(wflag){
   	while (true) {
     	if (getline(&word, &sz, write) <= 0) {
       	break;
