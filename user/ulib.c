@@ -292,19 +292,20 @@ uniq(char *argv[], int fd) {
   //char *words[1024];
 	int newsize = 10;
   char *word = malloc(newsize);
-	printf("%s\n", getline(&word, &newsize, read));
-	/*if(wflag){
+	printf("%d\n", getline(&word, &newsize, read));
+  printf("%s\n", word);
+	if(wflag){
   	while (true) {
     	if (getline(&word, &newsize, read) <= 0) {
       	break;
     	}
 			
-			printf("%s\n", words[wordcount]);
+			printf("%s\n", word);
 
-    	words[wordcount] = word;
-    	wordcount++;
+    	//words[wordcount] = word;
+    	//wordcount++;
   	}
-  }*/
+  }
   close(read);
 
   
