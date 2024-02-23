@@ -252,7 +252,7 @@ uniq(char *argv[], int fd) {
   char *lines[1024]; 
   bool cflag = false; bool wflag = false;
   
-	int write = open("/temp.txt", O_CREATE | O_RDONLY);
+	int write = open("/temp.txt", O_CREATE | O_WRONLY);
 
   //FINDING PROPER FLAGS
   while(argv[j] != NULL){
@@ -284,7 +284,7 @@ uniq(char *argv[], int fd) {
   }
   close(write);
   printf("closed write\n");
-  int read = open("/temp.txt", O_WRONLY);
+  int read = open("/temp.txt", O_RDONLY);
 
 	
 	// this isn't working </3
