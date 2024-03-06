@@ -65,64 +65,67 @@ strchr(const char *s, char c)
   return 0;
 }
 
-int
+char*
 gets(char *buf, int max)
 {
-  return fgets(buf, max, 0);
+  fgets(0, buf, max);
+  return buf;
 }
 
 int
-fgets(char *buf, int max, int file_des){
-  int i = 0, cc;
+fgets(int fd, char *buf, int max)
+{
+  int i, cc;
   char c;
 
-  for(i=0; i+1<max;){
-	cc = read(file_des, &c, 1);
-	if(cc<1)
-	   break;
-	buf[i++] = c;
-	if(c == '\n' || c== '\r')
-	   break;
+  for(i=0; i+1 < max; ){
+    cc = read(fd, &c, 1);
+    if(cc < 1)
+      break;
+    buf[i++] = c;
+    if(c == '\n' || c == '\r')
+      break;
   }
-
   buf[i] = '\0';
   return i;
 }
 
-int getline(char **lineptr, int *sz, int fd){
-   if(*sz == 0 && *lineptr ==0){
-	*sz = 1024;
-	*lineptr = malloc(*sz);
-   }
+int
+getline(char **lineptr, int *n, int fd)
+{
+  if (*lineptr == 0 && *n == 0) {
+    *n = 128;
+    *lineptr = malloc(*n);
+  }
 
-   char *buf = *lineptr;
-   int total = 0;
-   int result = 0;
-  
-   while(buf[total-1] != '\n'){
-	result = fgets(buf + total, *sz - total, fd);
-	total += result;
+  char *buf = *lineptr;
+  uint total_read = 0;
+  while (1) {
+    int read_sz = fgets(fd, buf + total_read, *n - total_read);
+    if (read_sz == 0) {
+      return total_read;
+    } else if (read_sz == -1) {
+      // error
+      return -1;
+    }
 
-	if(result == 0){
-	   return total;
-	}
+    total_read += read_sz;
+    if (buf[total_read - 1] == '\n') {
+      break;
+    }
 
-	else if (result == -1){
-	   return total;
-	}
+    uint new_n = *n * 2;
+    char *new_buf = malloc(new_n);
+    memcpy(new_buf, buf, *n);
+    free(buf);
 
-	else{
-	   *sz = *sz * 2;
-	   char *new_buf = malloc(*sz);
-	   memcpy(new_buf, *lineptr, *sz/2);
-	   free(*lineptr);
-	   *lineptr = new_buf;
-	   buf = *lineptr;
-	}
-	
-   }
+    buf = new_buf;
 
-   return total;
+    *n = new_n;
+    *lineptr = buf;
+  }
+
+  return total_read;
 }
 
 int
