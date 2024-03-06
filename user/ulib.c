@@ -83,10 +83,11 @@ fgets(int fd, char *buf, int max)
     if(cc < 1)
       break;
     buf[i++] = c;
-    if(c == '\n' || c == '\r')
-      break;
+    if(c == '\n' || c == '\r' || c =='\t')
+    	break;
   }
   buf[i] = '\0';
+  printf("fgets read buf: %s\n", buf);
   return i;
 }
 
@@ -110,13 +111,14 @@ getline(char **lineptr, int *n, int fd)
     }
 
     total_read += read_sz;
-    if (buf[total_read - 1] == '\n') {
+    if (buf[total_read - 1] == '\n' || buf[total_read - 1] == '\t') {
       break;
     }
 
     uint new_n = *n * 2;
     char *new_buf = malloc(new_n);
     memcpy(new_buf, buf, *n);
+    printf("getline read buf: %s\n", buf);
     free(buf);
 
     buf = new_buf;
@@ -227,6 +229,7 @@ writewords(char *line, int fd){
 void print_uniq(int count, char *lines[], bool cflag) {
   int curr = 0; // keeps track of which line we're at
   int instances = 0; // keeps track of how many instances
+  printf("printing unique\n");
   while(curr < count) { // while we still have stuff to read
     if (curr == 0) {
        instances++; // everything has at least one instance 
@@ -270,9 +273,11 @@ void lines(int fd, bool cflag) {
     if (getline(&line, &sz, fd) <= 0) {
       break;
     }
-
-    lines[count] = line;
-    count++;
+   	lines[count] = line;
+   	printf("wanted to add %s\n", line);
+   	printf("added: %s to lines[%d]\n", lines[count], count);
+   	count++;
+   	free(line);
   }	
 	
 	bubble_sort(lines, count); // sort all the lines
@@ -300,6 +305,7 @@ void words(int fd, bool cflag){
 
     writewords(line, write);
     count++;
+    free(line);
   }
   close(write);
 	// have to close & reopen file because xv6 hates us
@@ -318,6 +324,7 @@ void words(int fd, bool cflag){
       
     words[wordcount] = word;
     wordcount++;
+    free(word);
   }
 
   close(read);
