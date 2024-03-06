@@ -235,7 +235,7 @@ void print_uniq(int count, char *lines[], bool cflag) {
     else if ((strcmp(lines[curr], "\0") == 0) || (strcmp(lines[curr], "\n") == 0)) {
        continue;
     }
-		else if(curr+1 < count && strcmp(lines[curr], lines[curr + 1]) == 0){
+		else if(strcmp(lines[curr], lines[curr + 1]) == 0){
       instances++;
 		}
 		// if we have hit the last uniq instance, print it out
@@ -263,10 +263,10 @@ void print_uniq(int count, char *lines[], bool cflag) {
 void lines(int fd, bool cflag) {
 	int sz = 20; // getline will resize if necessary
 	int count = 0; // num of lines
-  char *line = malloc(sz);
   char *lines[1024];
 
 	while (true) {
+		char *line = malloc(sz);
     if (getline(&line, &sz, fd) <= 0) {
       break;
     }
@@ -274,10 +274,9 @@ void lines(int fd, bool cflag) {
     lines[count] = line;
     count++;
   }	
-
+	
 	bubble_sort(lines, count); // sort all the lines
   print_uniq(count, lines, cflag); // print uniq instances
-	free(line);
 }
 
 /*
@@ -290,11 +289,11 @@ void lines(int fd, bool cflag) {
 void words(int fd, bool cflag){
 	int sz = 20; // getline will resize if necessary
 	int count = 0; // num of lines
-  char *line = malloc(sz);
   // file we are writing the words to
 	int write = open("/temp.txt", O_CREATE | O_WRONLY);
 
 	while (true) {
+		char *line = malloc(sz);
     if (getline(&line, &sz, fd) <= 0) {
       break;
     }
@@ -310,9 +309,9 @@ void words(int fd, bool cflag){
   int wordcount = 0; // num words
   char *words[1024];
   int newsize = 10;
-  char *word = malloc(newsize);
   
   while (true) {
+		char *word = malloc(newsize);
     if(getline(&word, &newsize, read) <= 0) {
       break;
     }
@@ -320,11 +319,10 @@ void words(int fd, bool cflag){
     words[wordcount] = word;
     wordcount++;
   }
+
   close(read);
-  
 	bubble_sort(words, wordcount); // sort all the words
   print_uniq(wordcount, words, cflag); // print unique words
-	free(word);
 }
 
 /*
