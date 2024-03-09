@@ -76,18 +76,21 @@ int
 fgets(int fd, char *buf, int max)
 {
   int i, cc;
-  char c;
+  char c; int first_instance = 0;
 
   for(i=0; i+1 < max; ){
     cc = read(fd, &c, 1);
     if(cc < 1)
       break;
-    buf[i++] = c;
-    if(c == '\n' || c == '\r' || c =='\t')
+	if((c != ' '  && c!='\t') || first_instance){
+		 first_instance = 1;
+	   buf[i++] = c;	
+	}
+  if(c == '\n' || c == '\r')
     	break;
   }
+
   buf[i] = '\0';
-  printf("fgets read buf: %s\n", buf);
   return i;
 }
 
@@ -228,17 +231,15 @@ writewords(char *line, int fd){
 */
 void print_uniq(int count, char *lines[], bool cflag) {
   int curr = 0; // keeps track of which line we're at
-  int instances = 0; // keeps track of how many instances
-  printf("printing unique\n");
+  int instances = 1; // keeps track of how many instances
+
   while(curr < count) { // while we still have stuff to read
-    if (curr == 0) {
-       instances++; // everything has at least one instance 
-    }
     // skip null terms and line ends
-    else if ((strcmp(lines[curr], "\0") == 0) || (strcmp(lines[curr], "\n") == 0)) {
+    if ((strcmp(lines[curr], "\0") == 0) || (strcmp(lines[curr], "\n") == 0)) {
        continue;
     }
-		else if(strcmp(lines[curr], lines[curr + 1]) == 0){
+
+		if(strcmp(lines[curr], lines[curr + 1]) == 0){
       instances++;
 		}
 		// if we have hit the last uniq instance, print it out
@@ -274,14 +275,12 @@ void lines(int fd, bool cflag) {
       break;
     }
    	lines[count] = line;
-   	printf("wanted to add %s\n", line);
-   	printf("added: %s to lines[%d]\n", lines[count], count);
    	count++;
-   	free(line);
   }	
 	
 	bubble_sort(lines, count); // sort all the lines
   print_uniq(count, lines, cflag); // print uniq instances
+	free(lines);
 }
 
 /*
@@ -305,7 +304,6 @@ void words(int fd, bool cflag){
 
     writewords(line, write);
     count++;
-    free(line);
   }
   close(write);
 	// have to close & reopen file because xv6 hates us
@@ -324,12 +322,12 @@ void words(int fd, bool cflag){
       
     words[wordcount] = word;
     wordcount++;
-    free(word);
   }
 
   close(read);
 	bubble_sort(words, wordcount); // sort all the words
   print_uniq(wordcount, words, cflag); // print unique words
+	free(words);
 }
 
 /*
