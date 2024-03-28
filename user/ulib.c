@@ -78,16 +78,18 @@ fgets(int fd, char *buf, int max)
   int i, cc;
   char c; int first_instance = 0;
 
-  for(i=0; i+1 < max; ){
+  for (i = 0; i + 1 < max; ) {
     cc = read(fd, &c, 1);
-    if(cc < 1)
+    if (cc < 1)
       break;
-	if((c != ' '  && c!='\t') || first_instance){
-		 first_instance = 1;
-	   buf[i++] = c;	
-	}
-  if(c == '\n' || c == '\r')
-    	break;
+		if ((c != ' '  && c != '\t') || first_instance == 1) {
+			 first_instance = 1;
+		   buf[i++] = c;	
+		}
+	  if (c == '\n' || c == '\r') {
+	  	// printf("c is %c in %s\n", c, buf);
+	  	break;
+	  }
   }
 
   buf[i] = '\0';
@@ -115,7 +117,9 @@ getline(char **lineptr, int *n, int fd)
 
     total_read += read_sz;
     if (buf[total_read - 1] == '\n' || buf[total_read - 1] == '\t') {
-      break;
+    	// printf("getline read buf: %s\n", buf);
+    	// free(buf);
+      return total_read;
     }
 
     uint new_n = *n * 2;
@@ -209,7 +213,7 @@ writewords(char *line, int fd){
 	// first char we check is the start of the line
   char *character = &line[0];
   while (*character != '\0') { // while we aren't at the end
-   	if (*character == ' ') { // if we reach the end of a word
+   	if (*character == ' ' || *character == '\t') { // if we reach the end of a word
       fprintf(fd, "\n");
     }
     else {
@@ -235,7 +239,8 @@ void print_uniq(int count, char *lines[], bool cflag) {
 
   while(curr < count) { // while we still have stuff to read
     // skip null terms and line ends
-    if ((strcmp(lines[curr], "\0") == 0) || (strcmp(lines[curr], "\n") == 0)) {
+    if ((strcmp(lines[curr], "\0") == 0) || (strcmp(lines[curr], "\n") == 0)
+    				|| (strcmp(lines[curr], "\t") == 0)) {
        continue;
     }
 
@@ -275,6 +280,7 @@ void lines(int fd, bool cflag) {
       break;
     }
    	lines[count] = line;
+   	printf("lines[%d] = %s\n", count, lines[count]);
    	count++;
   }	
 	
