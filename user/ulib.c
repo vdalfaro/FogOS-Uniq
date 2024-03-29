@@ -87,7 +87,10 @@ fgets(int fd, char *buf, int max)
 		   buf[i++] = c;	
 		}
 	  if (c == '\n' || c == '\r') {
-	  	// printf("c is %c in %s\n", c, buf);
+	  	break;
+	  }
+	  else if (c == '\t') { // we want to remove tabs
+	  	i--;
 	  	break;
 	  }
   }
@@ -117,15 +120,12 @@ getline(char **lineptr, int *n, int fd)
 
     total_read += read_sz;
     if (buf[total_read - 1] == '\n' || buf[total_read - 1] == '\t') {
-    	// printf("getline read buf: %s\n", buf);
-    	// free(buf);
       return total_read;
     }
 
     uint new_n = *n * 2;
     char *new_buf = malloc(new_n);
     memcpy(new_buf, buf, *n);
-    printf("getline read buf: %s\n", buf);
     free(buf);
 
     buf = new_buf;
@@ -279,8 +279,11 @@ void lines(int fd, bool cflag) {
     if (getline(&line, &sz, fd) <= 0) {
       break;
     }
-   	lines[count] = line;
-   	printf("lines[%d] = %s\n", count, lines[count]);
+    char *temp = malloc(sz);
+    memcpy(temp, line, sz);
+    free(line); // free old memory
+   	lines[count] = temp;
+   	line = temp;
    	count++;
   }	
 	
@@ -301,14 +304,22 @@ void words(int fd, bool cflag){
 	int count = 0; // num of lines
   // file we are writing the words to
 	int write = open("/temp.txt", O_CREATE | O_WRONLY);
+	if (write < 0) {
+		printf("error opening file: temp.txt\n");
+		return;
+	}
 
 	while (true) {
 		char *line = malloc(sz);
     if (getline(&line, &sz, fd) <= 0) {
       break;
     }
-
-    writewords(line, write);
+    char *temp = malloc(sz);
+    memcpy(temp, line, sz);
+    free(line); // free old memory
+   	
+    writewords(temp, write);
+    line = temp;
     count++;
   }
   close(write);
@@ -316,6 +327,10 @@ void words(int fd, bool cflag){
 
 	// file to now read the words from
 	int read = open("/temp.txt", O_RDONLY);
+	if (read < 0) {
+		printf("error opening file: temp.txt\n");
+		return;
+	}
   int wordcount = 0; // num words
   char *words[1024];
   int newsize = 10;
@@ -325,7 +340,6 @@ void words(int fd, bool cflag){
     if(getline(&word, &newsize, read) <= 0) {
       break;
     }
-      
     words[wordcount] = word;
     wordcount++;
   }
