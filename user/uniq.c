@@ -1,9 +1,9 @@
 #include "kernel/types.h"
 #include "kernel/stat.h"
 #include "user/user.h"
-#include <stddef.h>
 #include "kernel/fcntl.h"
 #include <stdbool.h>
+#include <stddef.h>
 
 /*
 * helper function for sort that swaps two
@@ -126,7 +126,10 @@ void lines(int fd, bool cflag) {
   
   bubble_sort(lines, count); // sort all the lines
   print_uniq(count, lines, cflag); // print uniq instances
-  free(lines);
+  // free(lines);
+  for (int i = 0; i < count; i++) {
+  	free(lines[i]);
+  }
 }
 
 /*
@@ -185,7 +188,10 @@ void words(int fd, bool cflag){
   close(read);
   bubble_sort(words, wordcount); // sort all the words
   print_uniq(wordcount, words, cflag); // print unique words
-  free(words);
+  for (int i = 0; i < wordcount; i++) {
+  	free(words[i]);
+  }
+  // free(words);
 }
 
 /*
